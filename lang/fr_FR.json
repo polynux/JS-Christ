@@ -1,0 +1,5 @@
+{
+    "ready": "Le bot est prêt!",
+    "logIsOn": "Prêt à enregistrer les commandes.",
+    "unknowCommand": "Commande inconnue! Apprends à écrire ou essaie *help !"
+}

@@ -1,4 +1,5 @@
 {
     "ready": "Bot is ready!",
-    "logIsOn": "Ready to log commands."
+    "logIsOn": "Ready to log commands.",
+    "unknowCommand": "Unknow command! Learn to write or try *help !"
 }

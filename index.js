@@ -1,7 +1,8 @@
 const fs = require("fs");
 const Discord = require("discord.js");
-const { language, prefix, userId, token, giphyToken } = require("./config/config.json");
-const lang = require("./lang/" + language + ".json");
+const { language, userId, token, giphyToken } = require("./config/config.json");
+var { prefix } = require("./config/config.json");
+var lang = require("./lang/" + language + ".json");
 const fetch = require("node-fetch");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
@@ -52,9 +53,17 @@ client.on("message", async message => {
     else if (command === "meow") {
         client.commands.get("meow").execute(message);
     }
+    //change prefix
+    else if (command === "prefix") {
+        prefix = client.commands.get("prefix").execute(message, args);
+    }
+    //change language
+    else if (command === "lang") {
+        lang = client.commands.get("lang").execute(message, args);
+    }
     //erreur de commande
     else {
-        message.reply("Commande inconnue! Apprend à écrire ou essaie !help !");
+        message.reply(lang.unknowCommand.replace("*", `${prefix}`));
     }
 });
 
