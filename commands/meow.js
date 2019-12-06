@@ -6,7 +6,7 @@ async function meow(message) {
 module.exports = {
     name: "meow",
     description: "Search cat picture.",
-    execute(message) {
+    execute(message, args) {
         meow(message);
     }
 };

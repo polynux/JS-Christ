@@ -1,5 +1,10 @@
 {
     "ready": "Bot is ready!",
     "logIsOn": "Ready to log commands.",
-    "unknowCommand": "Unknow command! Learn to write or try *help !"
+    "unknowCommand": "Unknow command! Learn to write or try *help !",
+    "kicked": "has been kicked!",
+    "banned": "has been banned!",
+    "noPerms": "Insufficient permissions!",
+    "needTag": "You must tag someone!",
+    "axeBan": "You've been banned from starfleet!"
 }

@@ -1,5 +1,10 @@
 {
     "ready": "Le bot est prêt!",
     "logIsOn": "Prêt à enregistrer les commandes.",
-    "unknowCommand": "Commande inconnue! Apprends à écrire ou essaie *help !"
+    "unknowCommand": "Commande inconnue! Apprends à écrire ou essaie *help !",
+    "kicked": "a été exclu!",
+    "banned": "a été banni!",
+    "noPerms": "Permissions insuffisantes!",
+    "needTag": "Vous devez taguer quelqu'un!",
+    "axeBan": "Tu as été banni par la hâche!"
 }

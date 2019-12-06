@@ -9,6 +9,5 @@ module.exports = {
         config.prefix = args[0];
         fs.writeFileSync("config.json", config);
         message.channel.send("Change prefix from " + old + " to " + config.prefix);
-        return config.prefix;
     }
 };
