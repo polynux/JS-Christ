@@ -1,5 +1,7 @@
 {
+    "language": "en_EN",
     "prefix": "!",
+    "userId": "YOUR_USER_ID",
     "token": "YOUR_DISCORD_TOKEN",
     "giphyToken": "YOUR_GIPHY_TOKEN"
 }

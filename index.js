@@ -1,14 +1,25 @@
+const fs = require("fs");
 const Discord = require("discord.js");
-const { prefix, token, giphyToken } = require("./config.json");
+const { language, prefix, userId, token, giphyToken } = require("./config/config.json");
+const lang = require("./lang/" + language + ".json");
 const fetch = require("node-fetch");
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
+
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+for (const file of commandFiles) {
+    const command = require(`./commands/${file}`);
+    // set a new item in the Collection
+    // with the key as the command name and the value as the exported module
+    client.commands.set(command.name, command);
+}
 
 var GphApiClient = require("giphy-js-sdk-core");
 giphy = GphApiClient(giphyToken);
 
 client.once("ready", () => {
-    console.log("Bot is ready!");
-    console.log("Ready to log command.");
+    console.log(lang.ready);
+    console.log(lang.logIsOn);
 });
 
 client.on("message", async message => {
@@ -16,83 +27,33 @@ client.on("message", async message => {
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const command = args.shift().toLowerCase();
-    console.log(message.author.tag + " : " + message.content);
+    console.log("(" + message.guild.name + ") " + message.author.tag + " : " + message.content);
     //kick method
     if (command === "kick") {
-        if (message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"])) {
-            if (!message.mentions.members.size) {
-                message.reply("Vous devez taguer quelqu'un!");
-            } else {
-                let member = message.mentions.members.first();
-                member.kick().then(member => {
-                    giphy
-                        .search("gifs", { q: "fail" })
-                        .then(response => {
-                            var totalResponses = response.data.length;
-                            var responseIndex = Math.floor(Math.random() * 10 + 1) % totalResponses;
-                            var responseFinal = response.data[responseIndex];
-
-                            message.channel.send(":wave: " + member.displayName + " has been kicked!", {
-                                files: [responseFinal.images.fixed_height.url]
-                            });
-                        })
-                        .catch(() => {
-                            message.channel.send("Error");
-                        });
-                });
-            }
-        } else {
-            message.channel.send("Insufficient permissions!");
-        }
+        client.commands.get("kick").execute(message, giphy);
     }
     //ban method
     else if (command === "ban") {
-        if (message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"])) {
-            if (!message.mentions.members.size) {
-                message.reply("Vous devez taguer quelqu'un!");
-            } else {
-                let member = message.mentions.members.first();
-                member.ban("Tu as été banni par la hâche!").then(member => {
-                    giphy
-                        .search("gifs", { q: "ciao" })
-                        .then(response => {
-                            var totalResponses = response.data.length;
-                            var responseIndex = Math.floor(Math.random() * 10 + 1) % totalResponses;
-                            var responseFinal = response.data[responseIndex];
-
-                            message.channel.send(":wave: " + member.displayName + " has been banned!", {
-                                files: [responseFinal.images.fixed_height.url]
-                            });
-                        })
-                        .catch(() => {
-                            message.channel.send("Error");
-                        });
-                });
-            }
-        } else {
-            message.channel.send("Insufficient permissions!");
-        }
+        client.commands.get("ban").execute(message, giphy);
     }
     //ping pong
     else if (command === "ping") {
-        return message.channel.send("Pong.");
+        client.commands.get("ping").execute(message);
     }
     //kill bot
     else if (command === "exit") {
-        if (message.member.hasPermission(["ADMINISTRATOR"])) {
-            console.log("exit bot");
-            process.exit();
-        }
+        client.commands.get("exit").execute(message, userId);
     }
     //avatar
     else if (command === "avatar") {
-        return message.channel.send(`Your avatar: <${message.author.displayAvatarURL}>`);
+        client.commands.get("avatar").execute(message);
     }
     //meow
     else if (command === "meow") {
-        const { file } = await fetch("https://aws.random.cat/meow").then(response => response.json());
-        message.channel.send(file);
-    } else {
+        client.commands.get("meow").execute(message);
+    }
+    //erreur de commande
+    else {
         message.reply("Commande inconnue! Apprend à écrire ou essaie !help !");
     }
 });
