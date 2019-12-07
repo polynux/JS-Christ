@@ -1,8 +1,7 @@
 const fs = require("fs");
 const Discord = require("discord.js");
-const { language, token } = require("./config/config.json");
-var { prefix } = require("./config/config.json");
-var lang = require("./lang/" + language + ".json");
+const { language, token, prefix } = require("./config/config.json");
+const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
