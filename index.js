@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 const { language, token, prefix } = require("./config/config.json");
 const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
+var settings = require("./config/server-settings.json");
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
@@ -16,6 +17,17 @@ const cooldowns = new Discord.Collection();
 client.once("ready", () => {
     console.log(lang.ready);
     console.log(lang.logIsOn);
+
+    client.guilds.forEach(guild => {
+        if (!(guild.id in settings.server)) {
+            settings.server[guild.id] = { id: guild.id, name: guild.name };
+            console.log("write");
+        }
+    });
+    fs.writeFile("./config/server-settings.json", JSON.stringify(settings, null, 4), err => {
+        if (err) return console.log(err);
+        console.log(JSON.stringify(settings));
+    });
 });
 
 client.on("message", async message => {
