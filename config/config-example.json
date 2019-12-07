@@ -1,7 +1,13 @@
 {
     "language": "en_EN",
     "prefix": "!",
-    "userId": "YOUR_USER_ID",
-    "token": "YOUR_DISCORD_TOKEN",
-    "giphyToken": "YOUR_GIPHY_TOKEN"
+    "userId": "<YOUR_USER_ID>",
+    "token": "<YOUR_DISCORD_TOKEN>",
+    "giphyToken": "<YOUR_GIPHY_TOKEN>",
+    "firebase_config": {
+        "apiKey": "<YOUR_FIREBASE_API_KEY>",
+        "authDomain": "<YOUR_PROJECT_ID>.firebaseapp.com",
+        "databaseURL": "https://<YOUR_PROJECT_ID>.firebaseio.com",
+        "storageBucket": "bucket.appspot.com"
+    }
 }

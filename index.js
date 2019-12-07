@@ -1,12 +1,18 @@
 const fs = require("fs");
 const Discord = require("discord.js");
-const { language, token, prefix } = require("./config/config.json");
+const { language, token, prefix, firebase_config } = require("./config/config.json");
 const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
-var settings = require("./config/server-settings.json");
+const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+
+var firebase = require("firebase");
+
+//firebase init
+firebase.initializeApp(firebase_config);
+var database = firebase.database();
+
 client.commands = new Discord.Collection();
 
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
@@ -14,19 +20,26 @@ for (const file of commandFiles) {
 
 const cooldowns = new Discord.Collection();
 
-client.once("ready", () => {
+client.on("ready", () => {
     console.log(lang.ready);
     console.log(lang.logIsOn);
+});
 
-    client.guilds.forEach(guild => {
-        if (!(guild.id in settings.guild)) {
-            settings.guild[guild.id] = { id: guild.id, name: guild.name };
-            console.log("write");
-        }
+client.on("guildCreate", guild => {
+    var ref = database.ref("guild");
+    ref.once("value", snap => {
+        ref.child(guild.id)
+            .set(guild.name)
+            .then(console.log("Succesfully added " + guild.name + " to the database."));
     });
-    fs.writeFile("./config/server-settings.json", JSON.stringify(settings, null, 4), err => {
-        if (err) return console.log(err);
-        console.log(JSON.stringify(settings));
+});
+
+client.on("guildDelete", guild => {
+    var ref = database.ref("guild");
+    ref.once("value", snap => {
+        ref.child(guild.id)
+            .remove()
+            .then(console.log("Succesfully removed " + guild.name + " from the database."));
     });
 });
 
