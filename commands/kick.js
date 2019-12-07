@@ -6,6 +6,7 @@ giphy = GphApiClient(giphyToken);
 module.exports = {
     name: "kick",
     description: "Kick the selected user.",
+    guildOnly: true,
     execute(message, args) {
         if (message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"])) {
             if (!message.mentions.members.size) {
