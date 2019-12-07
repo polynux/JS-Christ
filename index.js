@@ -19,8 +19,8 @@ client.once("ready", () => {
     console.log(lang.logIsOn);
 
     client.guilds.forEach(guild => {
-        if (!(guild.id in settings.server)) {
-            settings.server[guild.id] = { id: guild.id, name: guild.name };
+        if (!(guild.id in settings.guild)) {
+            settings.guild[guild.id] = { id: guild.id, name: guild.name };
             console.log("write");
         }
     });
