@@ -27,9 +27,11 @@ client.on("ready", () => {
 
 client.on("guildCreate", guild => {
     var ref = database.ref("guild");
+
+    var settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID };
     ref.once("value", snap => {
         ref.child(guild.id)
-            .set(guild.name)
+            .set(settings)
             .then(console.log("Succesfully added " + guild.name + " to the database."));
     });
 });
