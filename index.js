@@ -1,16 +1,43 @@
 const fs = require("fs");
 const Discord = require("discord.js");
-const { language, token, prefix, firebase_config } = require("./config/config.json");
-const lang = require("./lang/" + language + ".json");
+const { token, firebase_config } = require("./config/config.json");
+var { language, prefix } = require("./config/config.json");
+var lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
+global.languages = {};
 
-var firebase = require("firebase");
+//collaspe lang files in one
+const langFiles = fs.readdirSync("./lang").filter(file => file.endsWith(".json"));
+for (var i = 0; i < langFiles.length; i++) {
+    languages[langFiles[i].slice(0, 5)] = require("./lang/" + langFiles[i]);
+}
+
+const firebase = require("firebase");
 
 //firebase init
 firebase.initializeApp(firebase_config);
 var database = firebase.database();
 
+//function for database edit in module
+module.exports = {
+    editDatabase: function(ref, value) {
+        database.ref(ref).set(value);
+    },
+    readDatabase: function(ref) {
+        database.ref(ref).once("value", snap => {
+            return snap.val();
+        });
+    },
+    addToDatabase: function(ref, value) {
+        database.ref(ref).push(value);
+    },
+    ansMessageInLang: function(message, sentence) {
+        database.ref("guild/" + message.guild.id + "/language").once("value", snap => {
+            message.reply(languages[snap.val()][sentence]);
+        });
+    }
+};
 client.commands = new Discord.Collection();
 
 for (const file of commandFiles) {
@@ -27,8 +54,7 @@ client.on("ready", () => {
 
 client.on("guildCreate", guild => {
     var ref = database.ref("guild");
-
-    var settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID };
+    var settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID, log: {} };
     ref.once("value", snap => {
         ref.child(guild.id)
             .set(settings)
@@ -52,6 +78,18 @@ client.on("message", async message => {
     const commandName = args.shift().toLowerCase();
     if (message.channel.type === "text") {
         console.log("(" + message.guild.name + " - " + message.guild.id + ") " + message.author.tag + " : " + message.content);
+        var date = Date.now();
+        database
+            .ref("guild")
+            .child(message.guild.id)
+            .child("log")
+            .child(date)
+            .set({
+                id: message.author.id,
+                name: message.author.tag,
+                content: message.content,
+                time: date
+            });
     }
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -59,7 +97,8 @@ client.on("message", async message => {
     if (!command) return;
 
     if (command.guildOnly && message.channel.type !== "text") {
-        return message.reply("I can't execute that command inside DMs!");
+        let langHere = database.ref("guilds/" + message.guild.id + "/language");
+        return message.reply(languages[langHere].onlyGuild);
     }
 
     if (command.args && !args.length) {

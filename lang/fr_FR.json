@@ -6,5 +6,7 @@
     "banned": "a été banni!",
     "noPerms": "Permissions insuffisantes!",
     "needTag": "Vous devez taguer quelqu'un!",
-    "axeBan": "Tu as été banni par la hâche!"
+    "axeBan": "Tu as été banni par la hâche!",
+    "onlyGuild": "Je ne peux pas exécuter cette commande en message privé!",
+    "langChanged": "Vous avez changé votre langue."
 }

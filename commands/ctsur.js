@@ -1,8 +1,6 @@
-const ytdl = require("ytdl-core");
-
 module.exports = {
-    name: "play",
-    description: "Play audio from youtube url.",
+    name: "ctsur",
+    description: "MAIS C'ETAIT SUR EN FAIT, C'ETAIT SUR!!.",
     cooldown: 5,
     execute(message, args) {
         const { voiceChannel } = message.member;
@@ -14,10 +12,13 @@ module.exports = {
         voiceChannel
             .join()
             .then(connection => {
-                const stream = ytdl(args[0], { filter: "audioonly" });
-                const dispatcher = connection.playStream(stream);
+                const audio = "../ressource/sardoche-cetait-sur.mp3";
+                const dispatcher = connection.playStream(audio);
+                message.reply("cetait sur");
 
-                dispatcher.on("end", () => voiceChannel.leave());
+                dispatcher.on("end", () => {
+                    voiceChannel.leave();
+                });
             })
             .catch(console.error);
     }

@@ -10,7 +10,7 @@ module.exports = {
     execute(message, args) {
         if (message.member.hasPermission(["KICK_MEMBERS", "BAN_MEMBERS"])) {
             if (!message.mentions.members.size) {
-                message.reply(needTag);
+                message.reply(languages.en_EN.needTag);
             } else {
                 let member = message.mentions.members.first();
                 member.kick().then(member => {

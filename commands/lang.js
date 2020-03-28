@@ -1,11 +1,10 @@
-var config = require("../config/config.json");
-const fs = require("fs");
+const index = require("../index.js");
 
 module.exports = {
     name: "lang",
     description: "Change language.",
     execute(message, args) {
-        config.language = args[0];
-        fs.writeFileSync("config.json", config);
+        index.editDatabase("guild/" + message.guild.id + "/language", args[0]);
+        index.ansMessageInLang(message, "langChanged");
     }
 };
