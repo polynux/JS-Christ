@@ -8,5 +8,6 @@
     "needTag": "You must tag someone!",
     "axeBan": "You've been banned from starfleet!",
     "onlyGuild": "I can't execute that command inside DMs!",
-    "langChanged": "Succesfully change your language"
+    "langChanged": "Succesfully change your language.",
+    "langNotChanged": "This language does not exist!"
 }

@@ -2,9 +2,17 @@ const index = require("../index.js");
 
 module.exports = {
     name: "lang",
-    description: "Change language.",
+    description: "Change language. You have fr_FR, en_EN",
     execute(message, args) {
-        index.editDatabase("guild/" + message.guild.id + "/language", args[0]);
-        index.ansMessageInLang(message, "langChanged");
+        if (args[0] in languages) {
+            index.editDatabase("guild/" + message.guild.id + "/language", args[0]);
+            index.readDatabase("guild/" + message.guild.id + "/language").then(data => {
+                message.reply(languages[data.val()].langChanged);
+            });
+        } else {
+            index.readDatabase("guild/" + message.guild.id + "/language").then(data => {
+                message.reply(languages[data.val()].langNotChanged);
+            });
+        }
     }
 };

@@ -25,19 +25,13 @@ module.exports = {
         database.ref(ref).set(value);
     },
     readDatabase: function(ref) {
-        database.ref(ref).once("value", snap => {
-            return snap.val();
-        });
+        return database.ref(ref).once("value");
     },
     addToDatabase: function(ref, value) {
         database.ref(ref).push(value);
-    },
-    ansMessageInLang: function(message, sentence) {
-        database.ref("guild/" + message.guild.id + "/language").once("value", snap => {
-            message.reply(languages[snap.val()][sentence]);
-        });
     }
 };
+
 client.commands = new Discord.Collection();
 
 for (const file of commandFiles) {
