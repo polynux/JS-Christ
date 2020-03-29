@@ -1,15 +1,15 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const { token, firebase_config } = require("./config/config.json");
-var { language, prefix } = require("./config/config.json");
-var lang = require("./lang/" + language + ".json");
+let { language, prefix } = require("./config/config.json");
+let lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 global.languages = {};
 
 //collaspe lang files in one
 const langFiles = fs.readdirSync("./lang").filter(file => file.endsWith(".json"));
-for (var i = 0; i < langFiles.length; i++) {
+for (let i = 0; i < langFiles.length; i++) {
     languages[langFiles[i].slice(0, 5)] = require("./lang/" + langFiles[i]);
 }
 
@@ -17,7 +17,7 @@ const firebase = require("firebase");
 
 //firebase init
 firebase.initializeApp(firebase_config);
-var database = firebase.database();
+let database = firebase.database();
 
 //function for database edit in module
 module.exports = {
@@ -47,8 +47,8 @@ client.on("ready", () => {
 });
 
 client.on("guildCreate", guild => {
-    var ref = database.ref("guild");
-    var settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID, log: {} };
+    let ref = database.ref("guild");
+    let settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID, log: {} };
     ref.once("value", snap => {
         ref.child(guild.id)
             .set(settings)
@@ -57,7 +57,7 @@ client.on("guildCreate", guild => {
 });
 
 client.on("guildDelete", guild => {
-    var ref = database.ref("guild");
+    let ref = database.ref("guild");
     ref.once("value", snap => {
         ref.child(guild.id)
             .remove()
@@ -72,7 +72,7 @@ client.on("message", async message => {
     const commandName = args.shift().toLowerCase();
     if (message.channel.type === "text") {
         console.log("(" + message.guild.name + " - " + message.guild.id + ") " + message.author.tag + " : " + message.content);
-        var date = Date.now();
+        let date = Date.now();
         database
             .ref("guild")
             .child(message.guild.id)

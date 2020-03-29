@@ -1,6 +1,6 @@
 const { giphyToken, language } = require("../config/config.json");
 const { banned, noPerms, needTag, axeBan } = require("../lang/" + language + ".json");
-var GphApiClient = require("giphy-js-sdk-core");
+let GphApiClient = require("giphy-js-sdk-core");
 giphy = GphApiClient(giphyToken);
 
 module.exports = {
@@ -17,9 +17,9 @@ module.exports = {
                     giphy
                         .search("gifs", { q: "ciao" })
                         .then(response => {
-                            var totalResponses = response.data.length;
-                            var responseIndex = Math.floor(Math.random() * 10 + 1) % totalResponses;
-                            var responseFinal = response.data[responseIndex];
+                            let totalResponses = response.data.length;
+                            let responseIndex = Math.floor(Math.random() * 10 + 1) % totalResponses;
+                            let responseFinal = response.data[responseIndex];
 
                             message.channel.send(":wave: " + member.displayName + " " + banned, {
                                 files: [responseFinal.images.fixed_height.url]
