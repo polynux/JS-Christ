@@ -12,4 +12,4 @@ You have to create a bot on [discord/developers](https://discordapp.com/develope
 Go to your project directory, open the terminal of your choice and enter `git clone https://github.com/polynux/JS-Christ`
 Once it's done, `cd JS-Christ` and write `npm install`.
 After that you need to rename **config-example.json** to **config.json** in config folder . In here you have to put your **userId** from discord, your discord-bot **token**, your **giphyToken** if you want to use gif, and in firebase_config put your firebase database **apiKEY** and replace <YOUR_PROJECT_ID> with the corresponding id from firebase.
-![config-code](https://carbon.now.sh/dajzvnaiowukdTmknZCk)
+![config-code](https://i.imgur.com/AsX6kWQ.png)
