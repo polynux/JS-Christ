@@ -5,7 +5,7 @@ let { language, prefix } = require("./config/config.json");
 let lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-global.languages = {};
+let languages = {};
 
 //collaspe lang files in one
 const langFiles = fs.readdirSync("./lang").filter(file => file.endsWith(".json"));
@@ -20,16 +20,22 @@ firebase.initializeApp(firebase_config);
 let database = firebase.database();
 
 //function for database edit in module
+function editDatabase(ref, value) {
+    database.ref(ref).set(value);
+}
+function readDatabase(ref) {
+    return database.ref(ref).once("value");
+}
+function addToDatabase(ref, value) {
+    database.ref(ref).push(value);
+}
+
+//export func
 module.exports = {
-    editDatabase: function(ref, value) {
-        database.ref(ref).set(value);
-    },
-    readDatabase: function(ref) {
-        return database.ref(ref).once("value");
-    },
-    addToDatabase: function(ref, value) {
-        database.ref(ref).push(value);
-    }
+    editDatabase,
+    readDatabase,
+    addToDatabase,
+    languages
 };
 
 client.commands = new Discord.Collection();
