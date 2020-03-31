@@ -1,5 +1,17 @@
 const ytdl = require("ytdl-core");
 
+function play(voiceChannel) {
+    voiceChannel
+        .join()
+        .then(connection => {
+            const stream = ytdl(args[0], { filter: "audioonly" });
+            const dispatcher = connection.playStream(stream);
+
+            dispatcher.on("end", () => voiceChannel.leave());
+        })
+        .catch(console.error);
+}
+
 module.exports = {
     name: "play",
     description: "Play audio from youtube url.",
@@ -10,15 +22,6 @@ module.exports = {
         if (!voiceChannel) {
             return message.reply("please join a voice channel first!");
         }
-
-        voiceChannel
-            .join()
-            .then(connection => {
-                const stream = ytdl(args[0], { filter: "audioonly" });
-                const dispatcher = connection.playStream(stream);
-
-                dispatcher.on("end", () => voiceChannel.leave());
-            })
-            .catch(console.error);
+        play(voiceChannel);
     }
 };
