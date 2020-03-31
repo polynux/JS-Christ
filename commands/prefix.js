@@ -1,13 +1,14 @@
-let config = require("../config/config.json");
-const fs = require("fs");
+const index = require("../index.js");
 
 module.exports = {
     name: "prefix",
     description: "Change prefix.",
+    guildOnly: true,
     execute(message, args) {
-        let old = config.prefix;
-        config.prefix = args[0];
-        fs.writeFileSync("config.json", config);
-        message.channel.send("Change prefix from " + old + " to " + config.prefix);
+        index.readDatabase("guild/" + message.guild.id + "/prefix").then(data => {
+            let old = data.val();
+            index.editDatabase("guild/" + message.guild.id + "/prefix", args[0]);
+            message.channel.send("Change prefix from " + old + " to " + args[0]);
+        });
     }
 };

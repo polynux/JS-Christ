@@ -1,8 +1,8 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const { token, firebase_config } = require("./config/config.json");
-let { language, prefix } = require("./config/config.json");
-let lang = require("./lang/" + language + ".json");
+const { language, prefix } = require("./config/config.json");
+const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 let languages = {};
@@ -35,7 +35,8 @@ module.exports = {
     editDatabase,
     readDatabase,
     addToDatabase,
-    languages
+    languages,
+    prefix
 };
 
 client.commands = new Discord.Collection();
@@ -71,7 +72,7 @@ client.on("guildDelete", guild => {
     });
 });
 
-client.on("message", async message => {
+function cmdMessage(message, prefix) {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     const args = message.content.slice(prefix.length).split(/ +/);
@@ -90,6 +91,50 @@ client.on("message", async message => {
                 content: message.content,
                 time: date
             });
+        database
+            .ref("user")
+            .child(message.author.id)
+            .child("name")
+            .set(message.author.tag);
+        database
+            .ref("user")
+            .child(message.author.id)
+            .child("id")
+            .set(message.author.id);
+        database
+            .ref("user")
+            .child(message.author.id)
+            .child("log")
+            .child(date)
+            .set({
+                server: message.guild.id,
+                content: message.content,
+                time: date
+            });
+    }
+    if (message.channel.type === "dm") {
+        console.log("(" + message.author.id + ") " + message.author.tag + " : " + message.content);
+        let date = Date.now();
+        database
+            .ref("user")
+            .child(message.author.id)
+            .child("name")
+            .set(message.author.tag);
+        database
+            .ref("user")
+            .child(message.author.id)
+            .child("id")
+            .set(message.author.id);
+        database
+            .ref("user")
+            .child(message.author.id)
+            .child("log")
+            .child(date)
+            .set({
+                server: "dm",
+                content: message.content,
+                time: date
+            });
     }
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -97,7 +142,7 @@ client.on("message", async message => {
     if (!command) return;
 
     if (command.guildOnly && message.channel.type !== "text") {
-        let langHere = database.ref("guilds/" + message.guild.id + "/language");
+        let langHere = "en_EN";
         return message.reply(languages[langHere].onlyGuild);
     }
 
@@ -133,6 +178,16 @@ client.on("message", async message => {
     } catch (error) {
         console.error(error);
         message.reply(lang.unknowCommand.replace("*", `${prefix}`));
+    }
+}
+
+client.on("message", async message => {
+    if (message.channel.type === "dm") {
+        cmdMessage(message, prefix);
+    } else {
+        readDatabase("guild/" + message.guild.id + "/prefix").then(prefix => {
+            cmdMessage(message, prefix.val());
+        });
     }
 });
 
