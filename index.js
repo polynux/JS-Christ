@@ -80,61 +80,30 @@ function cmdMessage(message, prefix) {
     if (message.channel.type === "text") {
         console.log("(" + message.guild.name + " - " + message.guild.id + ") " + message.author.tag + " : " + message.content);
         let date = Date.now();
-        database
-            .ref("guild")
-            .child(message.guild.id)
-            .child("log")
-            .child(date)
-            .set({
-                id: message.author.id,
-                name: message.author.tag,
-                content: message.content,
-                time: date
-            });
-        database
-            .ref("user")
-            .child(message.author.id)
-            .child("name")
-            .set(message.author.tag);
-        database
-            .ref("user")
-            .child(message.author.id)
-            .child("id")
-            .set(message.author.id);
-        database
-            .ref("user")
-            .child(message.author.id)
-            .child("log")
-            .child(date)
-            .set({
-                server: message.guild.id,
-                content: message.content,
-                time: date
-            });
+        editDatabase("guild/" + message.guild.id + "/log/" + date, {
+            id: message.author.id,
+            name: message.author.tag,
+            content: message.content,
+            time: date
+        });
+        editDatabase("user/" + message.author.id + "/name", message.author.tag);
+        editDatabase("user/" + message.author.id + "/id", message.author.id);
+        editDatabase("user/" + message.author.id + "/log/" + date, {
+            server: message.guild.id,
+            content: message.content,
+            time: date
+        });
     }
     if (message.channel.type === "dm") {
         console.log("(" + message.author.id + ") " + message.author.tag + " : " + message.content);
         let date = Date.now();
-        database
-            .ref("user")
-            .child(message.author.id)
-            .child("name")
-            .set(message.author.tag);
-        database
-            .ref("user")
-            .child(message.author.id)
-            .child("id")
-            .set(message.author.id);
-        database
-            .ref("user")
-            .child(message.author.id)
-            .child("log")
-            .child(date)
-            .set({
-                server: "dm",
-                content: message.content,
-                time: date
-            });
+        editDatabase("user/" + message.author.id + "/name", message.author.tag);
+        editDatabase("user/" + message.author.id + "/id", message.author.id);
+        editDatabase("user/" + message.author.id + "/log/" + date, {
+            server: "dm",
+            content: message.content,
+            time: date
+        });
     }
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
