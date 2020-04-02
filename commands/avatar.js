@@ -1,8 +1,14 @@
+const { sendMessage } = require("../index.js");
+
 module.exports = {
     name: "avatar",
     aliases: ["icon"],
     description: "Display user avatar.",
-    execute(message, avatar) {
-        return message.channel.send(`Your avatar: <${message.author.displayAvatarURL}>`);
+    execute(message, args) {
+        if (args.length == 0) {
+            return sendMessage(message, `Your avatar: <${message.author.displayAvatarURL}>`);
+        } else {
+            return sendMessage(message, message.mentions.users.first().tag + "'s avatar : <" + message.mentions.users.first().displayAvatarURL + ">");
+        }
     }
 };
