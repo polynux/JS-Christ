@@ -9,5 +9,6 @@
         "authDomain": "<YOUR_PROJECT_ID>.firebaseapp.com",
         "databaseURL": "https://<YOUR_PROJECT_ID>.firebaseio.com",
         "storageBucket": "bucket.appspot.com"
-    }
+    },
+    "pasteebinKey": "<YOUR_PASTEBIN_API_KEY"
 }

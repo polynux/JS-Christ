@@ -16,6 +16,7 @@
         "giphy-js-sdk-core": "^1.0.6",
         "node-fetch": "^2.6.0",
         "node-opus": "^0.3.3",
+        "pastebin-js": "^1.0.4",
         "utf-8-validate": "^5.0.2",
         "ytdl-core": "^1.0.3",
         "zlib-sync": "^0.1.6"
