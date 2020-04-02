@@ -1,4 +1,5 @@
 const ytdl = require("ytdl-core");
+const { sendMessage } = require("../index.js");
 
 function play(voiceChannel) {
     voiceChannel
@@ -20,7 +21,7 @@ module.exports = {
         const { voiceChannel } = message.member;
 
         if (!voiceChannel) {
-            return message.reply("please join a voice channel first!");
+            return sendMessage(message, "Please join a voice channel first!", true);
         }
         play(voiceChannel);
     }

@@ -29,6 +29,14 @@ function readDatabase(ref) {
 function addToDatabase(ref, value) {
     database.ref(ref).push(value);
 }
+function sendMessage(message, text, error = false) {
+    if (error) {
+        message.channel.send({ embed: { color: 16711680, description: text } });
+    } else {
+        let embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
+        message.channel.send(embed);
+    }
+}
 
 //export func
 module.exports = {
@@ -36,7 +44,8 @@ module.exports = {
     readDatabase,
     addToDatabase,
     languages,
-    prefix
+    prefix,
+    sendMessage
 };
 
 client.commands = new Discord.Collection();

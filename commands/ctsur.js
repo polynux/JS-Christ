@@ -1,3 +1,5 @@
+const { sendMessage } = require("../index.js");
+
 module.exports = {
     name: "ctsur",
     description: "MAIS C'ETAIT SUR EN FAIT, C'ETAIT SUR!!.",
@@ -6,7 +8,7 @@ module.exports = {
         const { voiceChannel } = message.member;
 
         if (!voiceChannel) {
-            return message.reply("please join a voice channel first!");
+            return sendMessage(message, "Please join a voice channel first!", true);
         }
 
         voiceChannel

@@ -13,11 +13,11 @@ function help(message, prefix, args) {
             .send(data, { split: true })
             .then(() => {
                 if (message.channel.type === "dm") return;
-                message.reply("I've sent you a DM with all my commands!");
+                index.sendMessage(message, "I've sent you a DM with all my commands!");
             })
             .catch(error => {
                 console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
-                message.reply("it seems like I can't DM you! Do you have DMs disabled?");
+                index.sendMessage(message, "it seems like I can't DM you! Do you have DMs disabled?", true);
             });
     }
 
@@ -25,7 +25,7 @@ function help(message, prefix, args) {
     const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
     if (!command) {
-        return message.reply("that's not a valid command!");
+        return index.sendMessage(message, "That's not a valid command!", true);
     }
 
     data.push(`**Name:** ${command.name}`);

@@ -8,13 +8,17 @@ module.exports = {
     description: "Get all logs from the server.",
     cooldown: 5,
     execute(message, args) {
-        index.readDatabase("guild/" + message.guild.id).then(data => {
-            pastebin
-                .createPaste(JSON.stringify(data.val()))
-                .then(paste => {
-                    message.channel.send(paste);
-                })
-                .fail(err => console.log(err));
-        });
+        if (message.member.hasPermission("ADMINISTRATOR")) {
+            index.readDatabase("guild/" + message.guild.id).then(data => {
+                pastebin
+                    .createPaste(JSON.stringify(data.val()))
+                    .then(paste => {
+                        message.channel.send(paste);
+                    })
+                    .fail(err => console.log(err));
+            });
+        } else {
+            index.sendMessage(message, "Insufficient permissions!", true);
+        }
     }
 };

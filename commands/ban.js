@@ -2,6 +2,7 @@ const { giphyToken, language } = require("../config/config.json");
 const { banned, noPerms, needTag, axeBan } = require("../lang/" + language + ".json");
 let GphApiClient = require("giphy-js-sdk-core");
 giphy = GphApiClient(giphyToken);
+const { sendMessage } = require("../index.js");
 
 module.exports = {
     name: "ban",
@@ -26,7 +27,7 @@ module.exports = {
                             });
                         })
                         .catch(() => {
-                            message.channel.send("Error");
+                            sendMessage(message, "Error!", true);
                         });
                 });
             }
