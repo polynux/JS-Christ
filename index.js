@@ -150,7 +150,7 @@ function cmdMessage(message, prefix) {
 
     if (command.guildOnly && message.channel.type !== "text") {
         let langHere = "en_EN";
-        return message.reply(languages[langHere].onlyGuild);
+        return sendErrMessage(message, languages[langHere].onlyGuild, false);
     }
 
     if (command.args && !args.length) {
@@ -160,7 +160,7 @@ function cmdMessage(message, prefix) {
             reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
         }
 
-        return message.channel.send(reply);
+        return sendErrMessage(message, reply);
     }
 
     if (!cooldowns.has(command.name)) {
