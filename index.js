@@ -29,21 +29,38 @@ function readDatabase(ref) {
 function addToDatabase(ref, value) {
     database.ref(ref).push(value);
 }
-function logId(userMessage, botMessage) {
-    let messages = { userMessageId: userMessage.id, botMessageId: botMessage.id };
-    editDatabase("guild/" + userMessage.guild.id + "/log/" + userMessage.channel.id + "/" + userMessage.id, messages);
+function logId(message) {
+    let messages = { messageId: message.id };
+    editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + message.id, messages);
 }
-function sendMessage(message, text, error = false) {
+function sendMessage(message, text, error = false, time = 0) {
     if (error) {
-        message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
-            logId(message, botMessage);
-        });
+        if (!time) {
+            message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
+                logId(botMessage);
+            });
+        } else {
+            message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
+                logId(botMessage);
+                botMessage.delete(time);
+                editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + botMessage.id, null);
+            });
+        }
     } else {
         let embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
-        message.channel.send(embed).then(botMessage => {
-            logId(message, botMessage);
-        });
+        if (!time) {
+            message.channel.send(embed).then(botMessage => {
+                logId(botMessage);
+            });
+        } else {
+            message.channel.send(embed).then(botMessage => {
+                logId(botMessage);
+                botMessage.delete(time);
+                editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + botMessage.id, null);
+            });
+        }
     }
+    logId(message);
 }
 
 //export func
