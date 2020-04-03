@@ -33,34 +33,33 @@ function logId(message) {
     let messages = { messageId: message.id };
     editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + message.id, messages);
 }
-function sendMessage(message, text, error = false, time = 0) {
-    if (error) {
-        if (!time) {
-            message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
-                logId(botMessage);
-            });
-        } else {
-            message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
-                logId(botMessage);
-                botMessage.delete(time);
-                editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + botMessage.id, null);
-            });
-        }
+function sendMessage(message, text, notDm = true) {
+    let embed;
+    if (notDm) {
+        embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
     } else {
-        let embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
-        if (!time) {
-            message.channel.send(embed).then(botMessage => {
-                logId(botMessage);
-            });
-        } else {
-            message.channel.send(embed).then(botMessage => {
-                logId(botMessage);
-                botMessage.delete(time);
-                editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + botMessage.id, null);
-            });
-        }
+        embed = new Discord.RichEmbed().setColor("#FFFF00").setDescription(text);
     }
-    logId(message);
+    message.channel.send(embed).then(botMessage => {
+        if (notDm) {
+            logId(botMessage);
+            logId(message);
+        }
+    });
+}
+function sendErrMessage(message, text, notDm = true) {
+    message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
+        if (notDm) {
+            logId(botMessage);
+            logId(message);
+        }
+    });
+}
+function sendTimeoutMessage(message, text, timeout) {
+    let embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
+    message.channel.send(embed).then(botMessage => {
+        botMessage.delete(timeout);
+    });
 }
 
 //export func
@@ -70,7 +69,9 @@ module.exports = {
     addToDatabase,
     languages,
     prefix,
-    sendMessage
+    sendMessage,
+    sendErrMessage,
+    sendTimeoutMessage
 };
 
 client.commands = new Discord.Collection();
@@ -89,7 +90,7 @@ client.on("ready", () => {
 
 client.on("guildCreate", guild => {
     let ref = database.ref("guild");
-    let settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID, log: {} };
+    let settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID };
     ref.once("value", snap => {
         ref.child(guild.id)
             .set(settings)

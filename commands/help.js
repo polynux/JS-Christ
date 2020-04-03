@@ -17,7 +17,7 @@ function help(message, prefix, args) {
             })
             .catch(error => {
                 console.error(`Could not send help DM to ${message.author.tag}.\n`, error);
-                index.sendMessage(message, "it seems like I can't DM you! Do you have DMs disabled?", true);
+                index.sendErrMessage(message, "it seems like I can't DM you! Do you have DMs disabled?");
             });
     }
 
@@ -25,7 +25,7 @@ function help(message, prefix, args) {
     const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
 
     if (!command) {
-        return index.sendMessage(message, "That's not a valid command!", true);
+        return index.sendErrMessage(message, "That's not a valid command!", false);
     }
 
     data.push(`**Name:** ${command.name}`);
