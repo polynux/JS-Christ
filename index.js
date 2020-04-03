@@ -86,6 +86,7 @@ const cooldowns = new Discord.Collection();
 client.on("ready", () => {
     console.log(lang.ready);
     console.log(lang.logIsOn);
+    client.user.setActivity("!help", { type: "PLAYING" });
 });
 
 client.on("guildCreate", guild => {
