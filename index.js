@@ -29,12 +29,20 @@ function readDatabase(ref) {
 function addToDatabase(ref, value) {
     database.ref(ref).push(value);
 }
+function logId(userMessage, botMessage) {
+    let messages = { userMessageId: userMessage.id, botMessageId: botMessage.id };
+    editDatabase("guild/" + userMessage.guild.id + "/log/" + userMessage.channel.id + "/" + userMessage.id, messages);
+}
 function sendMessage(message, text, error = false) {
     if (error) {
-        message.channel.send({ embed: { color: 16711680, description: text } });
+        message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
+            logId(message, botMessage);
+        });
     } else {
         let embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
-        message.channel.send(embed);
+        message.channel.send(embed).then(botMessage => {
+            logId(message, botMessage);
+        });
     }
 }
 
@@ -81,11 +89,7 @@ client.on("guildDelete", guild => {
     });
 });
 
-function cmdMessage(message, prefix) {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-    const args = message.content.slice(prefix.length).split(/ +/);
-    const commandName = args.shift().toLowerCase();
+function log(message) {
     if (message.channel.type === "text") {
         console.log("(" + message.guild.name + " - " + message.guild.id + ") " + message.author.tag + " : " + message.content);
         let date = Date.now();
@@ -114,6 +118,13 @@ function cmdMessage(message, prefix) {
             time: date
         });
     }
+}
+
+function cmdMessage(message, prefix) {
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+    const args = message.content.slice(prefix.length).split(/ +/);
+    const commandName = args.shift().toLowerCase();
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
