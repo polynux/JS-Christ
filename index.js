@@ -1,25 +1,24 @@
-const fs = require("fs");
-const Discord = require("discord.js");
-const { token, firebase_config } = require("./config/config.json");
-const { language, prefix } = require("./config/config.json");
+const fs = require('fs');
+const Discord = require('discord.js');
+const {token, language, firebase_config, prefix} = require('./config/config.json');
 const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
 let languages = {};
 
-//collaspe lang files in one
+// collaspe lang files in one
 const langFiles = fs.readdirSync("./lang").filter(file => file.endsWith(".json"));
 for (let i = 0; i < langFiles.length; i++) {
     languages[langFiles[i].slice(0, 5)] = require("./lang/" + langFiles[i]);
 }
 
-const firebase = require("firebase");
+const firebase = require('firebase');
 
-//firebase init
+// firebase init
 firebase.initializeApp(firebase_config);
 let database = firebase.database();
 
-//function for database edit in module
+// function for database edit in module
 function editDatabase(ref, value) {
     database.ref(ref).set(value);
 }
@@ -30,7 +29,9 @@ function addToDatabase(ref, value) {
     database.ref(ref).push(value);
 }
 function logId(message) {
-    let messages = { messageId: message.id };
+    let messages = {
+        messageId: message.id
+    };
     editDatabase("guild/" + message.guild.id + "/log/" + message.channel.id + "/" + message.id, messages);
 }
 function sendMessage(message, text, notDm = true) {
@@ -39,8 +40,7 @@ function sendMessage(message, text, notDm = true) {
         embed = new Discord.RichEmbed().setColor(message.guild.me.displayColor).setDescription(text);
     } else {
         embed = new Discord.RichEmbed().setColor("#FFFF00").setDescription(text);
-    }
-    message.channel.send(embed).then(botMessage => {
+    } message.channel.send(embed).then(botMessage => {
         if (notDm) {
             logId(botMessage);
             logId(message);
@@ -48,7 +48,12 @@ function sendMessage(message, text, notDm = true) {
     });
 }
 function sendErrMessage(message, text, notDm = true) {
-    message.channel.send({ embed: { color: 16711680, description: text } }).then(botMessage => {
+    message.channel.send({
+        embed: {
+            color: 16711680,
+            description: text
+        }
+    }).then(botMessage => {
         if (notDm) {
             logId(botMessage);
             logId(message);
@@ -62,7 +67,7 @@ function sendTimeoutMessage(message, text, timeout) {
     });
 }
 
-//export func
+// export func
 module.exports = {
     editDatabase,
     readDatabase,
@@ -86,25 +91,27 @@ const cooldowns = new Discord.Collection();
 client.on("ready", () => {
     console.log(lang.ready);
     console.log(lang.logIsOn);
-    client.user.setActivity("!help", { type: "PLAYING" });
+    client.user.setActivity("!help", {type: "PLAYING"});
 });
 
 client.on("guildCreate", guild => {
     let ref = database.ref("guild");
-    let settings = { id: guild.id, name: guild.name, language: language, prefix: prefix, ownerId: guild.ownerID };
+    let settings = {
+        id: guild.id,
+        name: guild.name,
+        language: language,
+        prefix: prefix,
+        ownerId: guild.ownerID
+    };
     ref.once("value", snap => {
-        ref.child(guild.id)
-            .set(settings)
-            .then(console.log("Succesfully added " + guild.name + " to the database."));
+        ref.child(guild.id).set(settings).then(console.log("Succesfully added " + guild.name + " to the database."));
     });
 });
 
 client.on("guildDelete", guild => {
     let ref = database.ref("guild");
     ref.once("value", snap => {
-        ref.child(guild.id)
-            .remove()
-            .then(console.log("Succesfully removed " + guild.name + " from the database."));
+        ref.child(guild.id).remove().then(console.log("Succesfully removed " + guild.name + " from the database."));
     });
 });
 
@@ -140,31 +147,43 @@ function log(message) {
 }
 
 function cmdMessage(message, prefix) {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    if (! message.content.startsWith(prefix) || message.author.bot) 
+        return;
+    
+
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
 
     const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-    if (!command) return;
+    if (! command) 
+        return;
+    
+
 
     if (command.guildOnly && message.channel.type !== "text") {
         let langHere = "en_EN";
         return sendErrMessage(message, languages[langHere].onlyGuild, false);
     }
 
-    if (command.args && !args.length) {
-        let reply = `You didn't provide any arguments, ${message.author}!`;
+    if (command.args && ! args.length) {
+        let reply = `You didn't provide any arguments, ${
+            message.author
+        }!`;
 
         if (command.usage) {
-            reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+            reply += `\nThe proper usage would be: \`${prefix}${
+                command.name
+            } ${
+                command.usage
+            }\``;
         }
 
         return sendErrMessage(message, reply);
     }
 
-    if (!cooldowns.has(command.name)) {
+    if (! cooldowns.has(command.name)) {
         cooldowns.set(command.name, new Discord.Collection());
     }
 
@@ -177,7 +196,11 @@ function cmdMessage(message, prefix) {
 
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
-            return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+            return message.reply(`please wait ${
+                timeLeft.toFixed(1)
+            } more second(s) before reusing the \`${
+                command.name
+            }\` command.`);
         }
     }
 
