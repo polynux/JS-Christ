@@ -1,4 +1,5 @@
-const { userId } = require("../config/config.json");
+const isConfig = require('../index').isConfig;
+const userId = isConfig ? require("../config/config.json").userId : process.env.USER_ID;
 
 module.exports = {
     name: "exit",

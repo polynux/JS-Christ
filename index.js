@@ -1,6 +1,10 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const {token, language, prefix, firebase_config} = require('./config/config.json');
+const isConfig = fs.existsSync('./config/config.json');
+const token = isConfig ? require('./config/config.json').token : process.env.TOKEN,
+    language = isConfig ? require('./config/config.json').language : process.env.LANGUAGE,
+    prefix = isConfig ? require('./config/config.json').prefix : process.env.PREFIX,
+    firebase_config = isConfig ? require('./config/config.json').firebase_config : process.env.FIREBASE_CONFIG;
 const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
@@ -69,6 +73,7 @@ function sendTimeoutMessage(message, text, timeout) {
 
 // export func
 module.exports = {
+    isConfig,
     editDatabase,
     readDatabase,
     addToDatabase,
