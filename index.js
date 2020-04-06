@@ -4,7 +4,12 @@ const isConfig = fs.existsSync('./config/config.json');
 const token = isConfig ? require('./config/config.json').token : process.env.TOKEN,
     language = isConfig ? require('./config/config.json').language : process.env.LANGUAGE,
     prefix = isConfig ? require('./config/config.json').prefix : process.env.PREFIX,
-    firebase_config = isConfig ? require('./config/config.json').firebase_config : process.env.FIREBASE_CONFIG;
+    firebase_config = isConfig ? require('./config/config.json').firebase_config : {
+        "apiKey": process.env.FIREBASE_API_KEY,
+        "authDomain": process.env.FIREBASE_AUTH_DOMAIN,
+        "databaseURL": process.env.FIREBASE_DATABASE_URL,
+        "storageBucket": process.env.FIREBASE_STORAGE_BUCKET
+    };
 const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
