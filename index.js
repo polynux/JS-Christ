@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const {token, language, firebase_config, prefix} = require('./config/config.json');
+const {token, language, prefix, firebase_config} = require('./config/config.json');
 const lang = require("./lang/" + language + ".json");
 const client = new Discord.Client();
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
