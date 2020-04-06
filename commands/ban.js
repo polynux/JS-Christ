@@ -1,8 +1,8 @@
-const {banned, noPerms, needTag, axeBan} = require("../lang/" + language + ".json");
-
 const {sendMessage, isConfig} = require("../index.js");
 const giphyToken = isConfig ? require('./config/config.json').giphyToken : process.env.GIPHY_TOKEN,
     language = isConfig ? require('./config/config.json').language : process.env.LANGUAGE;
+
+const {banned, noPerms, needTag, axeBan} = require("../lang/" + language + ".json");
 
 let GphApiClient = require("giphy-js-sdk-core");
 giphy = GphApiClient(giphyToken);
