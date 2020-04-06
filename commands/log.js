@@ -9,13 +9,13 @@ module.exports = {
     cooldown: 5,
     execute(message, args) {
         if (message.member.hasPermission("ADMINISTRATOR")) {
-            index.readDatabase("guild/" + message.guild.id).then(data => {
+            readDatabase("guild/" + message.guild.id).then(data => {
                 pastebin.createPaste(JSON.stringify(data.val())).then(paste => {
                     message.channel.send(paste);
                 }).fail(err => console.log(err));
             });
         } else {
-            index.sendMessage(message, "Insufficient permissions!", true);
+            sendMessage(message, "Insufficient permissions!", true);
         }
     }
 };
