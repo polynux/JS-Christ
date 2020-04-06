@@ -1,7 +1,7 @@
 const {sendMessage, isConfig} = require("../index.js");
 
-const giphyToken = isConfig ? require('./config/config.json').giphyToken : process.env.GIPHY_TOKEN,
-    language = isConfig ? require('./config/config.json').language : process.env.LANGUAGE;
+const giphyToken = isConfig ? require('../config/config.json').giphyToken : process.env.GIPHY_TOKEN,
+    language = isConfig ? require('../config/config.json').language : process.env.LANGUAGE;
 
 const {kicked, noPerms, needTag} = require("../lang/" + language + ".json");
 
